@@ -11,7 +11,12 @@
     "start": "ts-node-dev --respawn src/index.ts",
     "build": "tsc"
   },
-  "author": "Antonio Quintero-Felizzola",
+  "author": {
+    "name": "Antonio Quintero-Felizzola",
+    "email": "antonio.qfe@gmail.com",
+    "url": "https://twitter.com/k3rnel_err0r"
+  },
+  "repository": "k3rnel-err0r/json-sounds",
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^18.0.0",
