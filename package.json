@@ -1,5 +1,5 @@
 {
-  "name": "json-sounds",
+  "name": "@k3rnel_err0r/json-sounds",
   "version": "0.1.0",
   "bin": {
     "json-sounds": "dist/index.js"
