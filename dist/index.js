@@ -66,58 +66,57 @@ const soundFiles = [];
             const stats = fs_1.default.statSync(file);
             const fileSizeInBytes = stats.size;
             const fileSizeInMegaBytes = (0, bytesConverter_1.bytesConverter)(fileSizeInBytes);
-            // if (fileSizeInMegaBytes > 1.0) {
-            //   bigFiles.push(file);
-            //   return;
-            // }
-            // smallFiles.push(file);
-            soundFiles.push(file);
+            if (fileSizeInMegaBytes > 1.0) {
+                bigFiles.push(file);
+                return;
+            }
+            smallFiles.push(file);
+            // soundFiles.push(file);
         });
-        const soundsData = {};
-        soundsData.Sounds = {};
-        soundsData.Sounds.path = {};
-        // manifestData.separateSounds = {};
-        soundFiles.forEach(soundFile => {
-            if (soundFile.includes('.wav')) {
-                const fileName = soundFile.split('.')[0];
-                soundsData.Sounds.path[fileName] = soundFile;
+        const manifestData = {};
+        manifestData.Sounds = {};
+        manifestData.Sounds.path = {};
+        manifestData.separateSounds = {}; //
+        // soundFiles.forEach(soundFile => {
+        //   if (soundFile.includes('.wav')) {
+        //     const fileName = soundFile.split('.')[0];
+        //     soundsData.Sounds.path[fileName] = soundFile;
+        //   }
+        // });
+        smallFiles.forEach(smallFile => {
+            if (smallFile.includes('.wav')) {
+                const fileName = smallFile.split('.')[0];
+                manifestData.Sounds.path[fileName] = smallFile;
             }
         });
-        // smallFiles.forEach(smallFile => {
-        //   if (smallFile.includes('.wav')) {
-        //     const fileName = smallFile.split('.')[0];
-        //     manifestData.Sounds.path[fileName] = smallFile;
-        //   }
-        // });
-        // bigFiles.forEach(bigFile => {
-        //   if (bigFile.includes('.wav')) {
-        //     const fileName = bigFile.split('.')[0];
-        //     const separateSound: SeparateSounds = {
-        //       path: bigFile,
-        //       ...defaultSoundSettings
-        //     };
-        //     if (manifestData.separateSounds) {
-        //       manifestData.separateSounds[fileName] = separateSound;
-        //     }
-        //   }
-        // });
-        const manifest = Object.assign(Object.assign(Object.assign({}, soundsData), { silencePadding: 0.4 }), manifest_1.defaultSoundSettings);
+        bigFiles.forEach(bigFile => {
+            if (bigFile.includes('.wav')) {
+                const fileName = bigFile.split('.')[0];
+                const separateSound = Object.assign({ path: bigFile }, manifest_1.defaultSoundSettings);
+                if (manifestData.separateSounds) {
+                    // manifestData.separateSounds[fileName] = separateSound;
+                    manifestData.separateSounds[`Sounds.${fileName}`] = separateSound;
+                }
+            }
+        });
+        // const manifest = {
+        //   ...soundsData,
+        //   silencePadding: 0.4,
+        //   ...defaultSoundSettings,
+        // };
         // Object.keys(manifestData.separateSounds).forEach(key => {
         //   if (manifestData.separateSounds) {
         //     (newObject as any)[key] = manifestData.separateSounds[key];
         //   }
         // });
+        fs_1.default.writeFileSync('manifest.json', JSON.stringify(Object.assign({ Sounds: Object.assign(Object.assign(Object.assign({}, manifestData.Sounds), { silencePadding: 0.4 }), manifest_1.defaultSoundSettings) }, manifestData.separateSounds)));
         // fs.writeFileSync('manifest.json', JSON.stringify({
         //   Sounds: {
-        //     ...manifestData.Sounds,
+        //     ...manifest.Sounds,
         //     silencePadding: 0.4,
         //     ...defaultSoundSettings
-        //   },
-        //   ...manifestData.separateSounds
+        //   }
         // }));
-        fs_1.default.writeFileSync('manifest.json', JSON.stringify({
-            Sounds: Object.assign(Object.assign(Object.assign({}, manifest.Sounds), { silencePadding: 0.4 }), manifest_1.defaultSoundSettings)
-        }));
         yield (0, awaiter_1.awaiter)(2000);
         spinner.succeed(chalk_1.default.green(`Manifest file created successfully`));
         console.log();
